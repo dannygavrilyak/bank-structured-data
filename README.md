@@ -10,7 +10,7 @@ A synthetic data pipeline and analytical layer modeling a retail banking data wa
   - `03_customer_risk_mart.sql`: Customer risk profiling view (`v_customer_risk_profile`) calculating transactional volume, ticket sizes, and behavioral risk scoring (`HIGH`, `MEDIUM`, `LOW`).
 
 ### Database Schema (ERD)
-![Banking Schema ERD](docs/images/schema_erd.png)
+![Banking Schema ERD](docs/images/schema_bank_erd_new.png)
 
 ## Tech Stack
 - **Database**: PostgreSQL
