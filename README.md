@@ -9,6 +9,9 @@ A synthetic data pipeline and analytical layer modeling a retail banking data wa
   - `02_velocity_checks.sql`: Rapid succession detection using window functions (`LAG()`) to flag potential card abuse within 10-minute thresholds.
   - `03_customer_risk_mart.sql`: Customer risk profiling view (`v_customer_risk_profile`) calculating transactional volume, ticket sizes, and behavioral risk scoring (`HIGH`, `MEDIUM`, `LOW`).
 
+### Database Schema (ERD)
+![Banking Schema ERD](docs/images/schema_erd.png)
+
 ## Tech Stack
 - **Database**: PostgreSQL
 - **Languages & Frameworks**: Python 3.14, SQLAlchemy, Pandas, psycopg2-binary
