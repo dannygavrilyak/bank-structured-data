@@ -23,7 +23,7 @@ A synthetic data pipeline and analytical layer modeling a retail banking data wa
 ```bash
 git clone [https://github.com/dannygavrilyak/bank-structured-data.git](https://github.com/dannygavrilyak/bank-structured-data.git)
 cd bank-structured-data
-```
+
 ## 2. **Create and activate a virtual environment**:
 ```bash
 python3 -m venv .venv
@@ -47,11 +47,12 @@ Alternatively, execute sql/00_init_schema.sql directly inside DBeaver or your pr
 
     python3 main.py
 
-## 6. Analytical Marts & Monitoring
-    Run fraud detection and velocity check queries against the populated warehouse:
+6. Analytical Marts & Monitoring
 
-    sql/01_fraud_monitoring.sql: Merchant failure rate & abnormal reversal metrics.
+Run fraud detection and velocity check queries against the populated warehouse:
 
-    sql/02_velocity_checks.sql: Rapid-succession transaction patterns via window functions (LAG()).
+sql/01_fraud_monitoring.sql: Merchant failure rate & abnormal reversal metrics.
 
-    sql/03_customer_risk_mart.sql: Production view (v_customer_risk_profile) for automated risk categorization.
+sql/02_velocity_checks.sql: Rapid-succession transaction patterns via window functions (LAG()).
+
+sql/03_customer_risk_mart.sql: Production view (v_customer_risk_profile) for automated risk categorization.
