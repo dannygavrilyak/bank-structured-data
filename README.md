@@ -21,7 +21,7 @@ A synthetic data pipeline and analytical layer modeling a retail banking data wa
 
 ### 1. Repository Setup
 ```bash
-git clone [https://github.com/dannygavrilyak/bank-structured-data.git]
+git clone https://github.com/dannygavrilyak/bank-structured-data.git
 cd bank-structured-data
 ```
 
