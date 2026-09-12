@@ -21,8 +21,9 @@ A synthetic data pipeline and analytical layer modeling a retail banking data wa
 
 ### 1. Repository Setup
 ```bash
-git clone [https://github.com/dannygavrilyak/bank-structured-data.git](https://github.com/dannygavrilyak/bank-structured-data.git)
+git clone [https://github.com/dannygavrilyak/bank-structured-data.git]
 cd bank-structured-data
+```
 
 ## 2. **Create and activate a virtual environment**:
 ```bash
@@ -32,7 +33,7 @@ python3 -m pip install -r requirements.txt
 ```
 ## 3.**Configure .env**:
 
-DB_URL="postgresql+psycopg2://postgres:postgres@localhost:5432/postgres"
+    DB_URL="postgresql+psycopg2://postgres:postgres@localhost:5432/postgres"
 
 ## 4. **Schema Provisioning (DDL Bootstrap)**
 
