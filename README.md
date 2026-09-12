@@ -19,7 +19,7 @@ A synthetic data pipeline and analytical layer modeling a retail banking data wa
 
 ## Getting Started
 
-### 1. Repository Setup
+### 1. **Repository Setup**
 ```bash
 git clone https://github.com/dannygavrilyak/bank-structured-data.git
 cd bank-structured-data
@@ -48,7 +48,7 @@ Alternatively, execute sql/00_init_schema.sql directly inside DBeaver or your pr
 
     python3 main.py
 
-6. Analytical Marts & Monitoring
+## 6. **Analytical Marts & Monitoring**
 
 Run fraud detection and velocity check queries against the populated warehouse:
 
