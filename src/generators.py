@@ -4,7 +4,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from faker import Faker
 from sqlalchemy import create_engine
-from datetime import date
+from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 
 load_dotenv()
@@ -13,6 +13,10 @@ DB_URL = os.getenv("DB_URL")
 fake = Faker('en_US')
 
 engine = create_engine(DB_URL)
+
+SPENDING_PROFILES = ['Low', 'Medium', 'High']
+SPENDING_WEIGHTS = [0.6, 0.3, 0.1]
+PROFILE_RANGES = {'Low': (100,500), 'Medium': (500, 6000), 'High': (6000, 50000)}
 
 def generate_branches(num_branches: int = 5) -> list[int]:
     branches_data = []
@@ -99,6 +103,7 @@ def generate_customers(branches_ids: list[int], num_customers: int = 100) -> lis
         last_name = fake.last_name()
         city = fake.city()
         state = fake.state()
+        raw_ssn = fake.ssn()
 
         customer = {
             'customer_id': customer_id,
@@ -113,7 +118,7 @@ def generate_customers(branches_ids: list[int], num_customers: int = 100) -> lis
             'phone': fake.numerify('+1(###)###-##-##'),
             'email': f'{first_name}{last_name}@{fake.domain_name()}'[:50],
             'date_of_birth': fake.date_of_birth(minimum_age=18, maximum_age=85),
-            'ssn': fake.ssn()
+            'ssn': f"***-**-{raw_ssn[-4:]}"
         }
         customers_data.append(customer)
 
@@ -230,7 +235,7 @@ def generate_accounts(customers_ids: list[int], num_accounts: int = 50) -> list[
     account_statuses = ['Active', 'Active', 'Active', 'Frozen', 'Closed']
 
     for account_id in range(1, num_accounts+1):
-        
+
         registration_date = fake.date_between(start_date = '-4y', end_date='-1y')
         open_date = registration_date
 
@@ -242,6 +247,8 @@ def generate_accounts(customers_ids: list[int], num_accounts: int = 50) -> list[
         else:
             closed_date = None
             balance = round(random.uniform(1.0, 300000.0), 2)
+
+        spending_profile = random.choices(SPENDING_PROFILES, SPENDING_WEIGHTS, k=1)[0]
         
         account = {
             'account_number': account_id,
@@ -251,52 +258,76 @@ def generate_accounts(customers_ids: list[int], num_accounts: int = 50) -> list[
             'account_status': status,
             'registration_date': registration_date,
             'open_date': open_date,
-            'closed_date': closed_date
+            'closed_date': closed_date,
+            'spending_profile': spending_profile
         }
         accounts_data.append(account)
 
     df_accounts = pd.DataFrame(accounts_data)
-    df_accounts.to_sql(
-        name='accounts', con=engine, if_exists='append', index=False
-    )
+    df_accounts = df_accounts.drop(columns=['spending_profile'])
+    df_accounts.to_sql(name='accounts', con=engine, if_exists='append', index=False)
     print(f'Successfully added accounts: {len(df_accounts)} ✅')
     return accounts_data
 
-def generate_transactions(accounts: list[dict], num_transactions: int = 1000) -> list[dict]:
-    usable_accounts = [
-        acc for acc in accounts if acc['account_status'] in ['Active', 'Frozen']
-    ]
+def generate_transactions(accounts: list[dict], num_transactions: int = 1000, fraud_account_ratio = 0.03, outlier_ratio=0.015) -> list[dict]:
 
-    transaction_types = [
-        'Deposit',
-        'Withdrawal',
-        'Transfer',
-        'Payment',
-        'ATM Withdrawal',
-    ]
+    usable_accounts = [acc for acc in accounts if acc['account_status'] in ['Active', 'Frozen']]
 
-    trasactions_data = []
+    fraud_accounts = set(random.sample(
+        [acc['account_number'] for acc in usable_accounts],
+        k=max(1, int(len(usable_accounts) * fraud_account_ratio))
+    ))
+    transaction_types = ['Deposit', 'Withdrawal', 'Transfer', 'Payment', 'ATM Withdrawal']
+    transactions_data, anomaly_log = [], []
+    tx_id = 1
 
-    for transaction_id in range(1, num_transactions+1):
+    for acc in usable_accounts:
+        low, high = PROFILE_RANGES[acc['spending_profile']]
 
-        acc = random.choice(usable_accounts)
-        tx_datetime = fake.date_time_between(
-            start_date=acc['open_date'], end_date='now'
-        )
+        for _ in range(max(1, round(num_transactions/len(usable_accounts)))):
+            transaction = {
+                'transaction_id': tx_id,
+                'account_number': acc['account_number'],
+                'transaction_type': random.choice(transaction_types),
+                'amount': round(random.uniform(low, high), 2),
+                'date_time': fake.date_time_between(start_date=acc['open_date'], end_date='now')
+            }
+            transactions_data.append(transaction)
+            tx_id += 1
 
-        transaction = {
-            'transaction_id': transaction_id,
-            'account_number': acc['account_number'],
-            'transaction_type': random.choice(transaction_types),
-            'amount': random.randint(1, 300000),
-            'date_time': tx_datetime
-        }
-        trasactions_data.append(transaction)
+        if acc['account_number'] in fraud_accounts:
+            burst_time = fake.date_time_between(start_date=acc['open_date'], end_date='now')
 
-    df_transactions = pd.DataFrame(trasactions_data)
+            for i in range (random.randint(3,6)):
+                t = burst_time + timedelta(seconds=random.randint(30, 500) * i)
+                transaction = {
+                    'transaction_id': tx_id,
+                    'account_number': acc['account_number'],
+                    'transaction_type': 'Withdrawal',
+                    'amount': round(random.uniform(3, 50), 2),
+                    'date_time': t
+                }
+                transactions_data.append(transaction)
+                anomaly_log.append({'transaction_id': tx_id, 'anomaly_type': 'velocity_burst'})
+                tx_id += 1
+
+        if random.random() < outlier_ratio:
+            transaction = {
+                'transaction_id': tx_id,
+                'account_number': acc['account_number'],
+                'transaction_type': random.choice(['Transfer', 'Withdrawal']),
+                'amount': round(high * random.randint(5,12), 2),
+                'date_time': fake.date_time_between(start_date=acc['open_date'], end_date='now')
+            }
+            transactions_data.append(transaction)
+            anomaly_log.append({'transaction_id': tx_id, 'anomaly_type': 'outlier'})
+            tx_id += 1
+
+    df_transactions = pd.DataFrame(transactions_data)
     df_transactions.to_sql(name='transactions', index=False, con=engine, if_exists='append')
-    print(f'Successfully added transactions: {len(df_transactions)} ✅')
-    return trasactions_data
+    pd.DataFrame(anomaly_log).to_csv('anomaly_ground_truth.csv', index=False)
+    print(f'Successfully added transactions: {len(df_transactions)} ✅, injected {len(anomaly_log)}')
+    return transactions_data
 
 def generate_transaction_details(transactions_ids: list[dict]) -> list[int]:
     details_data = []
