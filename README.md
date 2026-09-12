@@ -52,8 +52,6 @@ Alternatively, execute sql/00_init_schema.sql directly inside DBeaver or your pr
 
 Run fraud detection and velocity check queries against the populated warehouse:
 
-sql/01_fraud_monitoring.sql: Merchant failure rate & abnormal reversal metrics.
-
-sql/02_velocity_checks.sql: Rapid-succession transaction patterns via window functions (LAG()).
-
-sql/03_customer_risk_mart.sql: Production view (v_customer_risk_profile) for automated risk categorization.
+    sql/01_fraud_monitoring.sql: Merchant failure rate & abnormal reversal metrics.
+    sql/02_velocity_checks.sql: Rapid-succession transaction patterns via window functions (LAG()).
+    sql/03_customer_risk_mart.sql: Production view (v_customer_risk_profile) for automated risk categorization.
