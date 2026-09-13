@@ -264,12 +264,11 @@ def generate_accounts(customers_ids: list[int], num_accounts: int = 50) -> list[
         accounts_data.append(account)
 
     df_accounts = pd.DataFrame(accounts_data)
-    df_accounts = df_accounts.drop(columns=['spending_profile'])
     df_accounts.to_sql(name='accounts', con=engine, if_exists='append', index=False)
     print(f'Successfully added accounts: {len(df_accounts)} ✅')
     return accounts_data
 
-def generate_transactions(accounts: list[dict], num_transactions: int = 1000, fraud_account_ratio = 0.03, outlier_ratio=0.015) -> list[dict]:
+def generate_transactions(accounts: list[dict], num_transactions: int = 1000, fraud_account_ratio = 0.03, outlier_ratio=0.035) -> list[dict]:
 
     usable_accounts = [acc for acc in accounts if acc['account_status'] in ['Active', 'Frozen']]
 
@@ -409,4 +408,3 @@ def generate_transaction_status(transactions: list[dict]) -> list[int]:
     df_transaction_status.to_sql(name='transaction_status', index=False, if_exists='append', con=engine)
     print(f'Succesfully added transactions statuses: {len(status_data)} ✅')
     return df_transaction_status['status_id'].tolist()
-
