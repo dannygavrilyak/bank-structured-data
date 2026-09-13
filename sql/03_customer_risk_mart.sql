@@ -17,6 +17,7 @@ WITH customer_tx_stats AS (
     LEFT JOIN transaction_status s ON t.transaction_id = s.transaction_id
     GROUP BY c.customer_id, c.first_name, c.last_name, c.city
 )
+
 SELECT 
     customer_id,
     full_name,

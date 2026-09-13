@@ -1,4 +1,5 @@
--- Analysis 2: Velocity Checks — Rapid successive transactions per account (Card Testing / Fraud)
+-- Analysis 3: Velocity Checks — Rapid successive transactions per account (Card Testing / Fraud)
+
 WITH ranked_transactions AS (
     SELECT 
         account_number,
@@ -22,5 +23,5 @@ SELECT
     ROUND(EXTRACT(EPOCH FROM (date_time - prev_transaction_time)) / 60, 2) AS minutes_since_last_tx
 FROM ranked_transactions
 WHERE prev_transaction_time IS NOT NULL
-  AND EXTRACT(EPOCH FROM (date_time - prev_transaction_time)) <= 600
+  AND EXTRACT(EPOCH FROM (date_time - prev_transaction_time)) <= 120
 ORDER BY minutes_since_last_tx ASC;

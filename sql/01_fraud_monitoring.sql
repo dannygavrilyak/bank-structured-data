@@ -23,3 +23,33 @@ SELECT
 FROM transaction_metrics
 WHERE total_transactions >= 10
 ORDER BY failure_rate_pct DESC, total_volume DESC;
+
+-- Analysis 2: Amount Outliers by Spending Profile
+WITH profile_limits AS (
+    SELECT 
+        t.transaction_id,
+        t.account_number,
+        a.spending_profile,
+        t.amount,
+        t.date_time,
+        t.transaction_type,
+        CASE 
+            WHEN a.spending_profile = 'Low' THEN 500
+            WHEN a.spending_profile = 'Medium' THEN 6000
+            WHEN a.spending_profile = 'High' THEN 50000
+        END AS threshold_amount
+    FROM transactions t
+    JOIN accounts a ON t.account_number = a.account_number
+)
+SELECT 
+    transaction_id,
+    account_number,
+    spending_profile,
+    amount,
+    threshold_amount,
+    ROUND(amount - threshold_amount, 2) AS excess_amount,
+    date_time,
+    transaction_type
+FROM profile_limits
+WHERE amount > threshold_amount
+ORDER BY excess_amount DESC;

@@ -296,9 +296,11 @@ def generate_transactions(accounts: list[dict], num_transactions: int = 1000, fr
 
         if acc['account_number'] in fraud_accounts:
             burst_time = fake.date_time_between(start_date=acc['open_date'], end_date='now')
+            t = burst_time
 
             for i in range (random.randint(3,6)):
-                t = burst_time + timedelta(seconds=random.randint(30, 500) * i)
+                if i > 0:
+                    t += timedelta(seconds=random.randint(30, 90))
                 transaction = {
                     'transaction_id': tx_id,
                     'account_number': acc['account_number'],
