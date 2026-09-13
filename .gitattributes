@@ -1,2 +1,3 @@
 *.sql linguist-detectable=true
 *.sql linguist-type=programming
+*.ipynb linguist-detectable=false
