@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: stg_accounts
+    columns:
+      - name: customer_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id

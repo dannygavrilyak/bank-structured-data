@@ -1,0 +1,15 @@
+version: 2
+
+
+models:
+  - name: fct_fraud_monitoring
+    columns:
+      - name: customer_id
+        data_tests:
+          - unique
+          - not_null
+      - name: risk_category
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['HIGH RISK', 'STANDARD']

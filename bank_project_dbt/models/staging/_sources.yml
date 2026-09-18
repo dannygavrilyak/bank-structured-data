@@ -1,0 +1,28 @@
+version: 2
+
+sources:
+  - name: bank_raw
+    schema: public
+    tables:
+      - name: accounts
+        description: "Customers accounts and their payment tier"
+      - name: branches
+        description: "Info about branches"
+      - name: customers
+        description: "Customers data and KYC raw data"
+      - name: atm
+        description: "Info about all bank's atms"
+      - name: cards
+        description: "Customer's card numbers, types and statuses"
+      - name: employees
+        description: "Info about all current employees, working in bank"
+      - name: loan_types
+        description: "Category, rate and amount of loans"
+      - name: loans
+        description: "All given loans" 
+      - name: transactions
+        description: "Info about customer's transactions, their type and amount"
+      - name: transaction_status
+        description: "Transaction statuses"
+      - name: transaction_details
+        description: "Info about made transactions"
