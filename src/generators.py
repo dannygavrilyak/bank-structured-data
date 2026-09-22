@@ -1,11 +1,12 @@
-import random
 import os
+import random
+from datetime import date, timedelta
+
 import pandas as pd
+from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
 from faker import Faker
 from sqlalchemy import create_engine
-from datetime import date, timedelta
-from dateutil.relativedelta import relativedelta
 
 load_dotenv()
 DB_URL = os.getenv("DB_URL")
@@ -193,7 +194,7 @@ def generate_loan_types() -> list[int]:
 
     df_loans_types = pd.DataFrame(loan_types_data)
     df_loans_types.to_sql(name='loan_types', con=engine, index=False, if_exists='append')
-    print(f'Succesfully added loan_types ✅')
+    print('Succesfully added loan_types ✅')
     return df_loans_types['loan_type_id'].tolist()
 
 def generate_loans(customers_ids: list[int], branches_ids: list[int], loan_types_ids: list[int] , num_loans: int = 55) -> list[int]:

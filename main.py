@@ -9,8 +9,9 @@ from src.generators import (
     generate_loans,
     generate_transaction_details,
     generate_transaction_status,
-    generate_transactions
+    generate_transactions,
 )
+
 
 def run_pipe():
     print('The pipeline was started')
