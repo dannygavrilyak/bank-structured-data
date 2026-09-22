@@ -30,6 +30,7 @@ docker compose up --build -d
 
 ## Manual Installation (Without Docker)
 
+---
 
 ##  Architecture & Data Flow
 
