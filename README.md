@@ -1,4 +1,4 @@
-# 🏦 Banking DWH & Anti-Fraud Analytical Pipeline
+# Banking DWH & Anti-Fraud Analytical Pipeline
 
 ![CI Pipeline](https://github.com/dannygavrilyak/bank-structured-data/actions/workflows/ci.yml/badge.svg)
 
@@ -8,7 +8,7 @@ A synthetic data pipeline and analytical layer modeling a retail banking data wa
 
 ---
 
-## 🚀 Quickstart (Recommended: Docker)
+## Quickstart (Recommended: Docker)
 
 Spin up the containerized PostgreSQL DWH, provision database schemas, and trigger synthetic batch generation with a single command:
 
@@ -28,11 +28,10 @@ docker compose up --build -d
 
 ---
 
-## 🛠️ Manual Installation (Without Docker)
+## Manual Installation (Without Docker)
 
----
 
-## 🏗️ Architecture & Data Flow
+##  Architecture & Data Flow
 
 * **Ingestion Layer (`/src` & `main.py`)**: Decoupled Python ETL pipeline leveraging SQLAlchemy, Pandas, and Faker to seed a relational PostgreSQL schema preserving foreign keys, chronological logic, realistic weighted distributions, and **PII data masking (SSN obfuscation, `***-**-####`)** for regulatory compliance.
 * **Analytical Layer (`/sql`)**:
@@ -47,7 +46,7 @@ docker compose up --build -d
 
 ![Banking Schema ERD](docs/images/schema_bank_erd_new.png)
 
-## 💻 Tech Stack
+## Tech Stack
 
 * **Database**: PostgreSQL (Containerized via Docker)
 * **Languages & Libraries**: Python 3.11+, Pandas, SQLAlchemy, psycopg2-binary, Faker
@@ -57,7 +56,7 @@ docker compose up --build -d
 
 ---
 
-## 📊 Power BI Dashboard & Risk Insights
+## Power BI Dashboard & Risk Insights
 
 ### Core DAX Metric
 
@@ -76,7 +75,7 @@ CALCULATE(
 
 ---
 
-## 🔍 Analytical Marts & Monitoring Queries
+## Analytical Marts & Monitoring Queries
 
 Run fraud detection and velocity check queries against the populated warehouse:
 
